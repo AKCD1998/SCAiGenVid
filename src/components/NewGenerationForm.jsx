@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "../lib/api.js";
+import { formatCostWithThb } from "../lib/format.js";
 import StatusBadge from "./StatusBadge.jsx";
 
 const ASPECT_RATIO_LABELS = {
@@ -10,11 +11,6 @@ const ASPECT_RATIO_LABELS = {
 
 const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10 MB
-
-function formatCost(cost) {
-  if (cost === null || cost === undefined) return "N/A";
-  return `$${Number(cost).toFixed(2)}`;
-}
 
 export default function NewGenerationForm({ onJobCreated }) {
   const [config, setConfig] = useState(null);
@@ -65,16 +61,19 @@ export default function NewGenerationForm({ onJobCreated }) {
 
   useEffect(() => {
     if (!config) return;
-    const durations = config.durationsByProvider?.[provider] || [];
+    const models = config.providerModels?.[provider] || [];
+    const nextModel = models.includes(model) ? model : models[0] || "";
+    if (nextModel !== model) {
+      setModel(nextModel);
+    }
+    // Allowed durations depend on the specific model (e.g. sora-2 vs sora-2-pro),
+    // not just the provider, so this must key off provider+model together.
+    const durations = config.durationsByProviderModel?.[provider]?.[nextModel] || [];
     if (durations.length && !durations.includes(Number(durationSeconds))) {
       setDurationSeconds(String(durations[0]));
     }
-    const models = config.providerModels?.[provider] || [];
-    if (models.length && !models.includes(model)) {
-      setModel(models[0]);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, config]);
+  }, [provider, model, config]);
 
   function handleFileChange(event) {
     const file = event.target.files?.[0];
@@ -169,7 +168,7 @@ export default function NewGenerationForm({ onJobCreated }) {
   }
 
   const promptMax = config?.promptMaxLength || null;
-  const durations = config?.durationsByProvider?.[provider] || [];
+  const durations = config?.durationsByProviderModel?.[provider]?.[model] || [];
   const models = config?.providerModels?.[provider] || [];
   const providers = config?.providers || ["mock"];
   const aspectRatios = config?.aspectRatios || ["16:9", "9:16", "1:1"];
@@ -287,7 +286,7 @@ export default function NewGenerationForm({ onJobCreated }) {
           <br />
           Provider/Model: {provider} / {model || "-"}
           <br />
-          ค่าใช้จ่ายโดยประมาณ: {formatCost(createdJob?.estimatedCost)}
+          ค่าใช้จ่ายโดยประมาณ: {formatCostWithThb(createdJob?.estimatedCost, config?.usdToThbRate)}
           {createdJob ? (
             <>
               <br />

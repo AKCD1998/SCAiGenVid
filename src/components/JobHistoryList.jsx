@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../lib/api.js";
+import { formatCostWithThb } from "../lib/format.js";
+import { useVideoStudioConfig } from "../lib/useVideoStudioConfig.js";
 import StatusBadge, { isTerminalStatus } from "./StatusBadge.jsx";
 
 const POLL_INTERVAL_MS = 15000;
-
-function formatCost(cost) {
-  if (cost === null || cost === undefined) return "N/A";
-  return `$${Number(cost).toFixed(2)}`;
-}
 
 function formatDateTime(value) {
   if (!value) return "-";
@@ -17,6 +14,7 @@ function formatDateTime(value) {
 }
 
 export default function JobHistoryList({ selectedJobId, onSelectJob }) {
+  const { config } = useVideoStudioConfig();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -153,7 +151,7 @@ export default function JobHistoryList({ selectedJobId, onSelectJob }) {
                   <td>{formatDateTime(job.createdAt)}</td>
                   <td>{formatDateTime(job.completedAt)}</td>
                   <td>{job.approvedAt ? "อนุมัติแล้ว" : job.rejectedAt ? "ปฏิเสธแล้ว" : "-"}</td>
-                  <td>{formatCost(job.actualCost ?? job.estimatedCost)}</td>
+                  <td>{formatCostWithThb(job.actualCost ?? job.estimatedCost, config?.usdToThbRate)}</td>
                 </tr>
               ))}
             </tbody>

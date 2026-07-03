@@ -436,10 +436,25 @@ button.primary {
   color: #5c6b80;
 }
 
+.usage-layout {
+  display: grid;
+  gap: 24px;
+}
+
+.summary-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
 @media (min-width: 960px) {
   .history-layout {
     grid-template-columns: 1.4fr 1fr;
     align-items: start;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

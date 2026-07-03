@@ -2,14 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../lib/api.js";
 import { useAuth } from "../AuthContext.jsx";
 import { can } from "../lib/permissions.js";
+import { formatCostWithThb } from "../lib/format.js";
+import { useVideoStudioConfig } from "../lib/useVideoStudioConfig.js";
 import StatusBadge, { isTerminalStatus } from "./StatusBadge.jsx";
 
 const POLL_INTERVAL_MS = 5000;
-
-function formatCost(cost) {
-  if (cost === null || cost === undefined) return "N/A";
-  return `$${Number(cost).toFixed(2)}`;
-}
 
 function formatDateTime(value) {
   if (!value) return "-";
@@ -20,6 +17,7 @@ function formatDateTime(value) {
 
 export default function JobDetailPanel({ jobId, onClose }) {
   const { role } = useAuth();
+  const { config } = useVideoStudioConfig();
   const [job, setJob] = useState(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -181,7 +179,8 @@ export default function JobDetailPanel({ jobId, onClose }) {
           <br />
           SKU: {job.productIdOrSkuReference || "-"}
           <br />
-          ค่าใช้จ่ายประมาณการ: {formatCost(job.estimatedCost)} · ค่าใช้จ่ายจริง: {formatCost(job.actualCost)}
+          ค่าใช้จ่ายประมาณการ: {formatCostWithThb(job.estimatedCost, config?.usdToThbRate)} · ค่าใช้จ่ายจริง:{" "}
+          {formatCostWithThb(job.actualCost, config?.usdToThbRate)}
         </p>
       </div>
 

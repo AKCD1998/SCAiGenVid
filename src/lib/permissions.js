@@ -9,6 +9,7 @@ export const ROLE_PERMISSIONS = {
     "content.video.approve",
     "content.video.reject",
     "content.video.retry",
+    "content.video.admin",
   ],
   staff: [
     "content.video.create",

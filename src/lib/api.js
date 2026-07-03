@@ -102,6 +102,10 @@ export const api = {
     return requestJson("/api/content/video-jobs/config");
   },
 
+  getUsageSummary() {
+    return requestJson("/api/content/usage-summary");
+  },
+
   createVideoJob(body) {
     return requestJson("/api/content/video-jobs", {
       method: "POST",

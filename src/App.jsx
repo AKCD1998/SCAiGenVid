@@ -1,11 +1,14 @@
 import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./AuthContext.jsx";
+import { can } from "./lib/permissions.js";
 import LoginPage from "./pages/LoginPage.jsx";
 import NewJobPage from "./pages/NewJobPage.jsx";
 import HistoryPage from "./pages/HistoryPage.jsx";
+import UsagePage from "./pages/UsagePage.jsx";
 
 function AppShell({ children }) {
   const { user, role, logout } = useAuth();
+  const canViewUsage = can(role, "content.video.admin");
 
   async function handleLogout() {
     await logout();
@@ -34,6 +37,11 @@ function AppShell({ children }) {
           <NavLink to="/history" className={({ isActive }) => `app-nav-link${isActive ? " active" : ""}`}>
             History
           </NavLink>
+          {canViewUsage ? (
+            <NavLink to="/usage" className={({ isActive }) => `app-nav-link${isActive ? " active" : ""}`}>
+              Usage & Cost
+            </NavLink>
+          ) : null}
         </nav>
       </header>
       <main>{children}</main>
@@ -64,6 +72,7 @@ export default function App() {
         <Route path="/" element={<Navigate to="/new" replace />} />
         <Route path="/new" element={<NewJobPage />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path="/usage" element={<UsagePage />} />
         <Route path="*" element={<Navigate to="/new" replace />} />
       </Routes>
     </AppShell>
