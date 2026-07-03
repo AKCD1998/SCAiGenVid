@@ -164,8 +164,14 @@ export const api = {
     return requestJson(`/api/content/video-jobs/${encodeURIComponent(jobId)}/events`);
   },
 
-  getVideoJobDownloadUrl(jobId) {
-    return requestJson(`/api/content/video-jobs/${encodeURIComponent(jobId)}/download`);
+  async getVideoJobDownloadUrl(jobId) {
+    const data = await requestJson(`/api/content/video-jobs/${encodeURIComponent(jobId)}/download`);
+    // The backend's local-disk storage provider returns a relative URL
+    // (/api/content/assets/binary?...) since it doesn't know its own public
+    // origin. This frontend is deployed on a different domain than the API, so a
+    // relative URL would resolve against *this* site instead of the backend —
+    // resolve it to an absolute URL here.
+    return { ...data, url: data?.url ? buildApiUrl(data.url) : data?.url };
   },
 
   initAssetUpload({ mimeType, assetType = "input_image", originalFilename }) {
