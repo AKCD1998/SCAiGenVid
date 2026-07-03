@@ -21,7 +21,7 @@ function AppShell({ children }) {
           </div>
           <div className="session-info">
             <span className="role-badge">{role || "ไม่ทราบสิทธิ์"}</span>
-            <span className="subtle">{user?.username || user?.name || ""}</span>
+            <span className="subtle">{user?.id || ""}</span>
             <button type="button" className="ghost" onClick={handleLogout}>
               ออกจากระบบ
             </button>
@@ -42,7 +42,17 @@ function AppShell({ children }) {
 }
 
 export default function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isRestoringSession } = useAuth();
+
+  if (isRestoringSession) {
+    return (
+      <div className="page">
+        <p className="subtle" style={{ padding: "2rem" }}>
+          กำลังโหลด...
+        </p>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <LoginPage />;

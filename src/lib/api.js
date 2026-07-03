@@ -70,8 +70,11 @@ async function requestJson(path, options = {}) {
 }
 
 export const api = {
+  // Auth endpoints are mounted at /admin/auth and /admin/me on the shared
+  // admin-api backend (confirmed against apps/admin-api/src/server.js) — NOT
+  // /api/auth. This app reuses that existing session/cookie system as-is.
   login({ username, password }) {
-    return requestJson("/api/auth/login", {
+    return requestJson("/admin/auth/login", {
       method: "POST",
       body: JSON.stringify({
         username: String(username || "").trim(),
@@ -81,12 +84,18 @@ export const api = {
   },
 
   async logout() {
-    const response = await apiFetch("/api/auth/logout", { method: "POST" });
+    const response = await apiFetch("/admin/auth/logout", { method: "POST" });
 
     if (!response.ok && response.status !== 401) {
       const payload = await parsePayload(response);
       throw new ApiError(payload?.error || payload?.message || `HTTP ${response.status}`, response.status, payload);
     }
+  },
+
+  // Session restore on page load/refresh — relies on the httpOnly cookie
+  // already being present; returns 401 if there is no valid session.
+  getMe() {
+    return requestJson("/admin/me");
   },
 
   getVideoJobConfig() {
