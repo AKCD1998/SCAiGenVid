@@ -1,0 +1,61 @@
+import { NavLink, Navigate, Route, Routes } from "react-router-dom";
+import { useAuth } from "./AuthContext.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import NewJobPage from "./pages/NewJobPage.jsx";
+import HistoryPage from "./pages/HistoryPage.jsx";
+
+function AppShell({ children }) {
+  const { user, role, logout } = useAuth();
+
+  async function handleLogout() {
+    await logout();
+  }
+
+  return (
+    <div className="page">
+      <header className="app-hero">
+        <div className="app-hero-top">
+          <div>
+            <p className="eyebrow">SC AI Video Content Studio</p>
+            <h1>สร้างวิดีโอสินค้าด้วย AI</h1>
+          </div>
+          <div className="session-info">
+            <span className="role-badge">{role || "ไม่ทราบสิทธิ์"}</span>
+            <span className="subtle">{user?.username || user?.name || ""}</span>
+            <button type="button" className="ghost" onClick={handleLogout}>
+              ออกจากระบบ
+            </button>
+          </div>
+        </div>
+        <nav className="app-nav">
+          <NavLink to="/new" className={({ isActive }) => `app-nav-link${isActive ? " active" : ""}`}>
+            New Job
+          </NavLink>
+          <NavLink to="/history" className={({ isActive }) => `app-nav-link${isActive ? " active" : ""}`}>
+            History
+          </NavLink>
+        </nav>
+      </header>
+      <main>{children}</main>
+    </div>
+  );
+}
+
+export default function App() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
+
+  return (
+    <AppShell>
+      <Routes>
+        <Route path="/" element={<Navigate to="/new" replace />} />
+        <Route path="/new" element={<NewJobPage />} />
+        <Route path="/history" element={<HistoryPage />} />
+        <Route path="*" element={<Navigate to="/new" replace />} />
+      </Routes>
+    </AppShell>
+  );
+}
