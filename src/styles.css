@@ -590,9 +590,28 @@ button.primary {
   gap: 24px;
 }
 
+/* Full-screen dimmed backdrop behind the job-detail modal. Click outside the
+   modal card (or press Escape) to close it. */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5vh 20px;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 720px;
+}
+
 .job-detail-panel {
-  position: sticky;
-  top: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .job-detail-section {
@@ -660,11 +679,6 @@ button.primary {
 }
 
 @media (min-width: 960px) {
-  .history-layout {
-    grid-template-columns: 1.4fr 1fr;
-    align-items: start;
-  }
-
   .summary-grid {
     grid-template-columns: repeat(2, 1fr);
   }
