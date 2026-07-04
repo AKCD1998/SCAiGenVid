@@ -104,21 +104,27 @@ export default function NewGenerationForm({ onJobCreated }) {
     setImageFile(file);
     setImageAssetId(null);
     setImagePreviewUrl(URL.createObjectURL(file));
+    // Upload immediately on selection instead of requiring a separate manual
+    // click — previously it was possible to select an image, forget the extra
+    // "upload" step, and hit Generate with the job silently created with no
+    // input image attached at all.
+    handleUpload(file);
   }
 
-  async function handleUpload() {
-    if (!imageFile) return;
+  async function handleUpload(fileOverride) {
+    const file = fileOverride || imageFile;
+    if (!file) return;
     setUploading(true);
     setUploadError("");
 
     try {
       const initData = await api.initAssetUpload({
-        mimeType: imageFile.type,
+        mimeType: file.type,
         assetType: "input_image",
-        originalFilename: imageFile.name,
+        originalFilename: file.name,
       });
 
-      await api.completeAssetUpload({ assetId: initData.assetId, file: imageFile });
+      await api.completeAssetUpload({ assetId: initData.assetId, file });
       setImageAssetId(initData.assetId);
     } catch (error) {
       setUploadError(error.message || "อัปโหลดรูปภาพไม่สำเร็จ");
@@ -133,6 +139,19 @@ export default function NewGenerationForm({ onJobCreated }) {
 
     if (!prompt.trim()) {
       setSubmitError("กรุณากรอก prompt");
+      return;
+    }
+
+    // Guard against submitting while an image is selected but hasn't finished
+    // uploading yet (or failed to upload) — otherwise the job silently gets
+    // created with no input image at all, and the model has to invent the
+    // product's appearance from the text prompt alone.
+    if (imageFile && !imageAssetId) {
+      setSubmitError(
+        uploading
+          ? "กำลังอัปโหลดรูปภาพอยู่ กรุณารอสักครู่แล้วลองใหม่"
+          : "รูปภาพยังอัปโหลดไม่สำเร็จ กรุณาลองอัปโหลดใหม่ก่อน Generate",
+      );
       return;
     }
 
@@ -199,10 +218,11 @@ export default function NewGenerationForm({ onJobCreated }) {
         )}
         <input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleFileChange} />
       </div>
+      {uploading ? <p className="subtle">กำลังอัปโหลดรูปภาพ...</p> : null}
       {uploadError ? <p className="message error-text">{uploadError}</p> : null}
-      {imageFile && !imageAssetId ? (
-        <button type="button" onClick={handleUpload} disabled={uploading}>
-          {uploading ? "กำลังอัปโหลด..." : "อัปโหลดรูปนี้"}
+      {imageFile && !imageAssetId && !uploading ? (
+        <button type="button" onClick={() => handleUpload()} disabled={uploading}>
+          ลองอัปโหลดใหม่
         </button>
       ) : null}
       {imageAssetId ? <p className="message success-text">อัปโหลดรูปสำเร็จแล้ว</p> : null}
@@ -299,8 +319,8 @@ export default function NewGenerationForm({ onJobCreated }) {
       {submitError ? <p className="message error-text">{submitError}</p> : null}
 
       <div className="form-actions">
-        <button type="submit" className="primary" disabled={submitting}>
-          {submitting ? "กำลังส่งงาน..." : "Generate"}
+        <button type="submit" className="primary" disabled={submitting || uploading}>
+          {submitting ? "กำลังส่งงาน..." : uploading ? "รอรูปภาพอัปโหลดก่อน..." : "Generate"}
         </button>
       </div>
     </form>
