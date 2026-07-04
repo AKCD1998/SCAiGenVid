@@ -67,7 +67,11 @@ export default function NewGenerationForm({ onJobCreated }) {
   useEffect(() => {
     if (!config) return;
     const models = config.providerModels?.[provider] || [];
-    const nextModel = models.includes(model) ? model : models[0] || "";
+    // Prefer sora-2 as the default model when picking a fresh one for a provider
+    // (e.g. after switching providers) — it's the cheaper/faster option and a
+    // more sensible starting point than whatever happens to be first in the list.
+    const preferredModel = models.includes("sora-2") ? "sora-2" : models[0] || "";
+    const nextModel = models.includes(model) ? model : preferredModel;
     if (nextModel !== model) {
       setModel(nextModel);
     }
@@ -75,7 +79,11 @@ export default function NewGenerationForm({ onJobCreated }) {
     // not just the provider, so this must key off provider+model together.
     const durations = config.durationsByProviderModel?.[provider]?.[nextModel] || [];
     if (durations.length && !durations.includes(Number(durationSeconds))) {
-      setDurationSeconds(String(durations[0]));
+      // Prefer 8 seconds as the default duration when one needs picking — a
+      // reasonable middle ground, rather than always defaulting to the
+      // shortest allowed option.
+      const preferredDuration = durations.includes(8) ? 8 : durations[0];
+      setDurationSeconds(String(preferredDuration));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, model, config]);
