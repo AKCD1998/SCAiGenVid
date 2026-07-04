@@ -1,10 +1,208 @@
 :root {
   font-family: "Segoe UI", "TH Sarabun New", system-ui, -apple-system, sans-serif;
-  color: #152238;
-  background: #f4f6f9;
   line-height: 1.45;
+
+  --color-bg: #f4f6f9;
+  --color-text: #152238;
+  --color-panel-bg: #ffffff;
+  --color-panel-border: #d8dfe8;
+  --color-shadow: rgba(21, 34, 56, 0.06);
+  --color-hero-grad-1: #1c3a5e;
+  --color-hero-grad-2: #10233b;
+  --color-hero-text: #fffdf8;
+  --color-eyebrow: #4a6ea5;
+  --color-subtle: #5c6b80;
+  --color-role-badge-bg: #e7eef7;
+  --color-role-badge-text: #1c3a5e;
+  --color-nav-border: #d5dde7;
+  --color-nav-bg: #ffffff;
+  --color-nav-text: #36516d;
+  --color-nav-active-bg: #1c3a5e;
+  --color-nav-active-border: #1c3a5e;
+  --color-nav-active-text: #fffdf8;
+  --color-input-border: #c4cede;
+  --color-input-bg: #ffffff;
+  --color-input-text: #152238;
+  --color-btn-bg: #1c3a5e;
+  --color-btn-bg-hover: #142a44;
+  --color-btn-text: #ffffff;
+  --color-btn-ghost-bg: #eef2f8;
+  --color-btn-ghost-text: #1c3a5e;
+  --color-btn-primary-grad-1: #1f9d57;
+  --color-btn-primary-grad-2: #157f45;
+  --color-link: #1c3a5e;
+  --color-dropzone-border: #c4cede;
+  --color-char-counter: #8091a5;
+  --color-summary-border: #d6dfea;
+  --color-summary-bg: #fbfcfe;
+  --color-summary-label: #66788d;
+  --color-error: #b3202f;
+  --color-success: #157f45;
+  --color-notice-success-border: #bfe1c4;
+  --color-notice-success-bg: #effbf1;
+  --color-notice-success-text: #185a2b;
+  --color-empty-state: #66788d;
+  --color-table-border: #d6dfea;
+  --color-table-header-bg: #f4f7fb;
+  --color-table-header-text: #35516f;
+  --color-table-row-border: #edf1f6;
+  --color-table-row-hover: #f7fafd;
+  --color-table-row-selected: #e7eef7;
+  --color-thumb-bg: #eef2f8;
+  --color-thumb-muted: #a5b2c2;
+  --color-timeline-border: #d6deea;
+  --color-timeline-note: #5c6b80;
+
+  --status-draft-bg: #eef2f8;      --status-draft-text: #5c6b80;
+  --status-queued-bg: #fff3d6;     --status-queued-text: #7c5800;
+  --status-processing-bg: #e3f0ff; --status-processing-text: #1d4f91;
+  --status-completed-bg: #effbf1;  --status-completed-text: #185a2b;
+  --status-failed-bg: #fdeef0;     --status-failed-text: #842029;
+  --status-cancelled-bg: #f0f0f0;  --status-cancelled-text: #555555;
+  --status-approved-bg: #e5f7ec;   --status-approved-text: #0f6b33;
+  --status-rejected-bg: #fdeef0;   --status-rejected-text: #842029;
+
   color-scheme: light;
 }
+
+/* Dark palette — applied either when the OS prefers dark (and the user hasn't
+   explicitly chosen light), or when the user explicitly picked dark via the
+   in-app toggle (data-theme="dark" stamped on <html>). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #10151d;
+    --color-text: #e7ecf4;
+    --color-panel-bg: #1a212c;
+    --color-panel-border: #2c3644;
+    --color-shadow: rgba(0, 0, 0, 0.35);
+    --color-hero-grad-1: #16324f;
+    --color-hero-grad-2: #0a1420;
+    --color-hero-text: #f4f6f9;
+    --color-eyebrow: #7ba3d6;
+    --color-subtle: #93a3b8;
+    --color-role-badge-bg: #24344a;
+    --color-role-badge-text: #a9c6ec;
+    --color-nav-border: #2c3644;
+    --color-nav-bg: #1a212c;
+    --color-nav-text: #b7c5d8;
+    --color-nav-active-bg: #2f6fb0;
+    --color-nav-active-border: #2f6fb0;
+    --color-nav-active-text: #f4f6f9;
+    --color-input-border: #33404f;
+    --color-input-bg: #131a24;
+    --color-input-text: #e7ecf4;
+    --color-btn-bg: #2f6fb0;
+    --color-btn-bg-hover: #3a82c9;
+    --color-btn-text: #ffffff;
+    --color-btn-ghost-bg: #232c39;
+    --color-btn-ghost-text: #a9c6ec;
+    --color-btn-primary-grad-1: #1f9d57;
+    --color-btn-primary-grad-2: #157f45;
+    --color-link: #7ba3d6;
+    --color-dropzone-border: #33404f;
+    --color-char-counter: #6f7f92;
+    --color-summary-border: #2c3644;
+    --color-summary-bg: #151c26;
+    --color-summary-label: #8a9bb0;
+    --color-error: #ff8a8a;
+    --color-success: #5fd08a;
+    --color-notice-success-border: #2f5c3c;
+    --color-notice-success-bg: #16281c;
+    --color-notice-success-text: #8fe0ab;
+    --color-empty-state: #8a9bb0;
+    --color-table-border: #2c3644;
+    --color-table-header-bg: #1e2733;
+    --color-table-header-text: #a9c6ec;
+    --color-table-row-border: #232c39;
+    --color-table-row-hover: #1e2733;
+    --color-table-row-selected: #24344a;
+    --color-thumb-bg: #232c39;
+    --color-thumb-muted: #5c6b80;
+    --color-timeline-border: #2c3644;
+    --color-timeline-note: #93a3b8;
+
+    --status-draft-bg: #232c39;      --status-draft-text: #93a3b8;
+    --status-queued-bg: #3a3016;     --status-queued-text: #f0c777;
+    --status-processing-bg: #17293f; --status-processing-text: #8fbdf0;
+    --status-completed-bg: #16281c;  --status-completed-text: #8fe0ab;
+    --status-failed-bg: #331b1e;     --status-failed-text: #ff9aa2;
+    --status-cancelled-bg: #262626;  --status-cancelled-text: #b7b7b7;
+    --status-approved-bg: #14261a;   --status-approved-text: #7fe3a3;
+    --status-rejected-bg: #331b1e;   --status-rejected-text: #ff9aa2;
+
+    color-scheme: dark;
+  }
+}
+
+/* Explicit user choice (via the in-app toggle) always wins over OS preference. */
+:root[data-theme="dark"] {
+  --color-bg: #10151d;
+  --color-text: #e7ecf4;
+  --color-panel-bg: #1a212c;
+  --color-panel-border: #2c3644;
+  --color-shadow: rgba(0, 0, 0, 0.35);
+  --color-hero-grad-1: #16324f;
+  --color-hero-grad-2: #0a1420;
+  --color-hero-text: #f4f6f9;
+  --color-eyebrow: #7ba3d6;
+  --color-subtle: #93a3b8;
+  --color-role-badge-bg: #24344a;
+  --color-role-badge-text: #a9c6ec;
+  --color-nav-border: #2c3644;
+  --color-nav-bg: #1a212c;
+  --color-nav-text: #b7c5d8;
+  --color-nav-active-bg: #2f6fb0;
+  --color-nav-active-border: #2f6fb0;
+  --color-nav-active-text: #f4f6f9;
+  --color-input-border: #33404f;
+  --color-input-bg: #131a24;
+  --color-input-text: #e7ecf4;
+  --color-btn-bg: #2f6fb0;
+  --color-btn-bg-hover: #3a82c9;
+  --color-btn-text: #ffffff;
+  --color-btn-ghost-bg: #232c39;
+  --color-btn-ghost-text: #a9c6ec;
+  --color-btn-primary-grad-1: #1f9d57;
+  --color-btn-primary-grad-2: #157f45;
+  --color-link: #7ba3d6;
+  --color-dropzone-border: #33404f;
+  --color-char-counter: #6f7f92;
+  --color-summary-border: #2c3644;
+  --color-summary-bg: #151c26;
+  --color-summary-label: #8a9bb0;
+  --color-error: #ff8a8a;
+  --color-success: #5fd08a;
+  --color-notice-success-border: #2f5c3c;
+  --color-notice-success-bg: #16281c;
+  --color-notice-success-text: #8fe0ab;
+  --color-empty-state: #8a9bb0;
+  --color-table-border: #2c3644;
+  --color-table-header-bg: #1e2733;
+  --color-table-header-text: #a9c6ec;
+  --color-table-row-border: #232c39;
+  --color-table-row-hover: #1e2733;
+  --color-table-row-selected: #24344a;
+  --color-thumb-bg: #232c39;
+  --color-thumb-muted: #5c6b80;
+  --color-timeline-border: #2c3644;
+  --color-timeline-note: #93a3b8;
+
+  --status-draft-bg: #232c39;      --status-draft-text: #93a3b8;
+  --status-queued-bg: #3a3016;     --status-queued-text: #f0c777;
+  --status-processing-bg: #17293f; --status-processing-text: #8fbdf0;
+  --status-completed-bg: #16281c;  --status-completed-text: #8fe0ab;
+  --status-failed-bg: #331b1e;     --status-failed-text: #ff9aa2;
+  --status-cancelled-bg: #262626;  --status-cancelled-text: #b7b7b7;
+  --status-approved-bg: #14261a;   --status-approved-text: #7fe3a3;
+  --status-rejected-bg: #331b1e;   --status-rejected-text: #ff9aa2;
+
+  color-scheme: dark;
+}
+
+/* Explicit "light" choice pins the light palette even if the OS prefers dark —
+   handled simply by the fact that none of the dark blocks above apply when
+   data-theme="light" is set (the @media block explicitly excludes it, and the
+   :root[data-theme="dark"] block doesn't match). */
 
 * {
   box-sizing: border-box;
@@ -13,7 +211,9 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: #f4f6f9;
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 button,
@@ -36,10 +236,10 @@ a {
 .hero,
 .panel,
 .notice {
-  background: #ffffff;
-  border: 1px solid #d8dfe8;
+  background: var(--color-panel-bg);
+  border: 1px solid var(--color-panel-border);
   border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(21, 34, 56, 0.06);
+  box-shadow: 0 8px 24px var(--color-shadow);
 }
 
 .hero {
@@ -50,8 +250,8 @@ a {
 }
 
 .hero-card {
-  background: linear-gradient(160deg, #1c3a5e 0%, #10233b 100%);
-  color: #fffdf8;
+  background: linear-gradient(160deg, var(--color-hero-grad-1) 0%, var(--color-hero-grad-2) 100%);
+  color: var(--color-hero-text);
   border-radius: 14px;
   padding: 20px;
   display: grid;
@@ -74,11 +274,11 @@ a {
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #4a6ea5;
+  color: var(--color-eyebrow);
 }
 
 .subtle {
-  color: #5c6b80;
+  color: var(--color-subtle);
 }
 
 .app-hero {
@@ -104,11 +304,23 @@ a {
   display: inline-flex;
   padding: 4px 12px;
   border-radius: 999px;
-  background: #e7eef7;
-  color: #1c3a5e;
+  background: var(--color-role-badge-bg);
+  color: var(--color-role-badge-text);
   font-size: 0.82rem;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-nav-border);
+  background: var(--color-nav-bg);
+  color: var(--color-nav-text);
+  font-weight: 600;
 }
 
 .app-nav {
@@ -123,17 +335,17 @@ a {
   align-items: center;
   padding: 10px 18px;
   border-radius: 999px;
-  border: 1px solid #d5dde7;
-  background: #fff;
-  color: #36516d;
+  border: 1px solid var(--color-nav-border);
+  background: var(--color-nav-bg);
+  color: var(--color-nav-text);
   text-decoration: none;
   font-weight: 600;
 }
 
 .app-nav-link.active {
-  background: #1c3a5e;
-  border-color: #1c3a5e;
-  color: #fffdf8;
+  background: var(--color-nav-active-bg);
+  border-color: var(--color-nav-active-border);
+  color: var(--color-nav-active-text);
 }
 
 .panel {
@@ -166,11 +378,11 @@ input,
 select,
 textarea {
   width: 100%;
-  border: 1px solid #c4cede;
+  border: 1px solid var(--color-input-border);
   border-radius: 10px;
   padding: 10px 12px;
-  background: #fff;
-  color: #152238;
+  background: var(--color-input-bg);
+  color: var(--color-input-text);
   font-weight: 400;
 }
 
@@ -182,14 +394,14 @@ button {
   border: 0;
   border-radius: 10px;
   padding: 10px 18px;
-  background: #1c3a5e;
-  color: #ffffff;
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
   cursor: pointer;
   font-weight: 600;
 }
 
 button:hover:not(:disabled) {
-  background: #142a44;
+  background: var(--color-btn-bg-hover);
 }
 
 button:disabled {
@@ -198,17 +410,17 @@ button:disabled {
 }
 
 button.ghost {
-  background: #eef2f8;
-  color: #1c3a5e;
+  background: var(--color-btn-ghost-bg);
+  color: var(--color-btn-ghost-text);
 }
 
 button.primary {
-  background: linear-gradient(135deg, #1f9d57 0%, #157f45 100%);
+  background: linear-gradient(135deg, var(--color-btn-primary-grad-1) 0%, var(--color-btn-primary-grad-2) 100%);
 }
 
 .text-link,
 .text-link-button {
-  color: #1c3a5e;
+  color: var(--color-link);
   text-decoration: underline;
   background: none;
   border: none;
@@ -225,7 +437,7 @@ button.primary {
 }
 
 .dropzone {
-  border: 2px dashed #c4cede;
+  border: 2px dashed var(--color-dropzone-border);
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -244,20 +456,20 @@ button.primary {
 .char-counter {
   font-weight: 400;
   font-size: 0.8rem;
-  color: #8091a5;
+  color: var(--color-char-counter);
   text-align: right;
 }
 
 .summary-card {
-  border: 1px solid #d6dfea;
+  border: 1px solid var(--color-summary-border);
   border-radius: 14px;
-  background: #fbfcfe;
+  background: var(--color-summary-bg);
   padding: 16px 18px;
 }
 
 .summary-card span {
   display: block;
-  color: #66788d;
+  color: var(--color-summary-label);
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -274,11 +486,11 @@ button.primary {
 }
 
 .error-text {
-  color: #b3202f;
+  color: var(--color-error);
 }
 
 .success-text {
-  color: #157f45;
+  color: var(--color-success);
 }
 
 .notice {
@@ -286,19 +498,19 @@ button.primary {
 }
 
 .notice.success {
-  border-color: #bfe1c4;
-  background: #effbf1;
-  color: #185a2b;
+  border-color: var(--color-notice-success-border);
+  background: var(--color-notice-success-bg);
+  color: var(--color-notice-success-text);
 }
 
 .empty-state {
   padding: 20px;
-  color: #66788d;
+  color: var(--color-empty-state);
 }
 
 .table-shell {
   overflow-x: auto;
-  border: 1px solid #d6dfea;
+  border: 1px solid var(--color-table-border);
   border-radius: 12px;
 }
 
@@ -306,20 +518,20 @@ button.primary {
   width: 100%;
   min-width: 960px;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--color-panel-bg);
 }
 
 .job-history-table th,
 .job-history-table td {
   padding: 10px 12px;
-  border-bottom: 1px solid #edf1f6;
+  border-bottom: 1px solid var(--color-table-row-border);
   text-align: left;
   vertical-align: middle;
 }
 
 .job-history-table thead th {
-  background: #f4f7fb;
-  color: #35516f;
+  background: var(--color-table-header-bg);
+  color: var(--color-table-header-text);
   font-weight: 700;
   position: sticky;
   top: 0;
@@ -330,11 +542,11 @@ button.primary {
 }
 
 .job-history-table tbody tr:hover {
-  background: #f7fafd;
+  background: var(--color-table-row-hover);
 }
 
 .job-history-table tbody tr.selected-row {
-  background: #e7eef7;
+  background: var(--color-table-row-selected);
 }
 
 .thumb-placeholder {
@@ -344,11 +556,11 @@ button.primary {
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: #eef2f8;
+  background: var(--color-thumb-bg);
 }
 
 .thumb-placeholder.muted {
-  color: #a5b2c2;
+  color: var(--color-thumb-muted);
 }
 
 .status-pill {
@@ -358,19 +570,19 @@ button.primary {
   border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 600;
-  background: #e7eef7;
-  color: #36516d;
+  background: var(--color-role-badge-bg);
+  color: var(--color-role-badge-text);
   white-space: nowrap;
 }
 
-.status-pill.status-draft { background: #eef2f8; color: #5c6b80; }
-.status-pill.status-queued { background: #fff3d6; color: #7c5800; }
-.status-pill.status-processing { background: #e3f0ff; color: #1d4f91; }
-.status-pill.status-completed { background: #effbf1; color: #185a2b; }
-.status-pill.status-failed { background: #fdeef0; color: #842029; }
-.status-pill.status-cancelled { background: #f0f0f0; color: #555; }
-.status-pill.status-approved { background: #e5f7ec; color: #0f6b33; }
-.status-pill.status-rejected { background: #fdeef0; color: #842029; }
+.status-pill.status-draft { background: var(--status-draft-bg); color: var(--status-draft-text); }
+.status-pill.status-queued { background: var(--status-queued-bg); color: var(--status-queued-text); }
+.status-pill.status-processing { background: var(--status-processing-bg); color: var(--status-processing-text); }
+.status-pill.status-completed { background: var(--status-completed-bg); color: var(--status-completed-text); }
+.status-pill.status-failed { background: var(--status-failed-bg); color: var(--status-failed-text); }
+.status-pill.status-cancelled { background: var(--status-cancelled-bg); color: var(--status-cancelled-text); }
+.status-pill.status-approved { background: var(--status-approved-bg); color: var(--status-approved-text); }
+.status-pill.status-rejected { background: var(--status-rejected-bg); color: var(--status-rejected-text); }
 
 .history-layout {
   display: grid;
@@ -384,7 +596,7 @@ button.primary {
 }
 
 .job-detail-section {
-  border-top: 1px dashed #e1e7f0;
+  border-top: 1px dashed var(--color-timeline-border);
   padding-top: 12px;
 }
 
@@ -400,7 +612,7 @@ button.primary {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  border-top: 1px dashed #e1e7f0;
+  border-top: 1px dashed var(--color-timeline-border);
   padding-top: 14px;
 }
 
@@ -423,7 +635,7 @@ button.primary {
   display: grid;
   gap: 2px;
   padding-left: 14px;
-  border-left: 2px solid #d6deea;
+  border-left: 2px solid var(--color-timeline-border);
 }
 
 .timeline-type {
@@ -433,7 +645,7 @@ button.primary {
 
 .timeline-note {
   margin: 2px 0 0;
-  color: #5c6b80;
+  color: var(--color-timeline-note);
 }
 
 .usage-layout {

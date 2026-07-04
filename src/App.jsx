@@ -1,12 +1,14 @@
 import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./AuthContext.jsx";
 import { can } from "./lib/permissions.js";
+import { useTheme } from "./lib/useTheme.js";
+import ThemeToggle from "./components/ThemeToggle.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import NewJobPage from "./pages/NewJobPage.jsx";
 import HistoryPage from "./pages/HistoryPage.jsx";
 import UsagePage from "./pages/UsagePage.jsx";
 
-function AppShell({ children }) {
+function AppShell({ children, theme, onToggleTheme }) {
   const { user, role, logout } = useAuth();
   const canViewUsage = can(role, "content.video.admin");
 
@@ -25,6 +27,7 @@ function AppShell({ children }) {
           <div className="session-info">
             <span className="role-badge">{role || "ไม่ทราบสิทธิ์"}</span>
             <span className="subtle">{user?.id || ""}</span>
+            <ThemeToggle theme={theme} onToggle={onToggleTheme} />
             <button type="button" className="ghost" onClick={handleLogout}>
               ออกจากระบบ
             </button>
@@ -51,10 +54,14 @@ function AppShell({ children }) {
 
 export default function App() {
   const { isAuthenticated, isRestoringSession } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   if (isRestoringSession) {
     return (
       <div className="page">
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+        </div>
         <p className="subtle" style={{ padding: "2rem" }}>
           กำลังโหลด...
         </p>
@@ -63,11 +70,11 @@ export default function App() {
   }
 
   if (!isAuthenticated) {
-    return <LoginPage />;
+    return <LoginPage theme={theme} onToggleTheme={toggleTheme} />;
   }
 
   return (
-    <AppShell>
+    <AppShell theme={theme} onToggleTheme={toggleTheme}>
       <Routes>
         <Route path="/" element={<Navigate to="/new" replace />} />
         <Route path="/new" element={<NewJobPage />} />

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../AuthContext.jsx";
+import ThemeToggle from "../components/ThemeToggle.jsx";
 
-export default function LoginPage() {
+export default function LoginPage({ theme, onToggleTheme }) {
   const { login, error: sessionError, setError } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +27,9 @@ export default function LoginPage() {
 
   return (
     <div className="page">
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px" }}>
+        <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+      </div>
       <section className="hero login-hero">
         <div>
           <p className="eyebrow">SC AI Video Content Studio</p>
