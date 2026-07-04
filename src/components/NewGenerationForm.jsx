@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "../lib/api.js";
 import { formatCostWithThb } from "../lib/format.js";
+import { resizeImageToExactSize, parseSizeString } from "../lib/imageResize.js";
 import StatusBadge from "./StatusBadge.jsx";
 
 const ASPECT_RATIO_LABELS = {
@@ -24,11 +25,15 @@ export default function NewGenerationForm({ onJobCreated }) {
   const [provider, setProvider] = useState("mock");
   const [model, setModel] = useState("");
 
+  // imageFile holds the ORIGINAL file the user picked — kept around so we can
+  // re-process (resize) it if provider/model/aspectRatio changes afterward,
+  // without asking the user to re-select the file.
   const [imageFile, setImageFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [imageAssetId, setImageAssetId] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [resizeNotice, setResizeNotice] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -75,6 +80,67 @@ export default function NewGenerationForm({ onJobCreated }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, model, config]);
 
+  // OpenAI's image-to-video requires the reference image to EXACTLY match the
+  // output's pixel size — resolve what that target size is for the current
+  // provider/model/aspectRatio combination (null for mock, which has no such
+  // requirement).
+  function resolveOpenAiTargetSize() {
+    if (provider !== "openai") return null;
+    const entry = config?.aspectRatioToOpenAiSize?.[aspectRatio];
+    if (!entry) return null;
+    const sizeString = model === "sora-2-pro" ? entry.pro : entry.default;
+    return parseSizeString(sizeString);
+  }
+
+  async function processAndUpload(rawFile) {
+    if (!rawFile) return;
+    setUploading(true);
+    setUploadError("");
+    setResizeNotice("");
+
+    try {
+      let fileToUpload = rawFile;
+      const targetSize = resolveOpenAiTargetSize();
+
+      if (targetSize) {
+        fileToUpload = await resizeImageToExactSize(rawFile, targetSize.width, targetSize.height);
+        setResizeNotice(
+          `ปรับขนาดรูปภาพเป็น ${targetSize.width}x${targetSize.height} พิกเซล ให้ตรงกับข้อกำหนดของ OpenAI แล้ว`,
+        );
+      }
+
+      setImagePreviewUrl((prevUrl) => {
+        if (prevUrl) URL.revokeObjectURL(prevUrl);
+        return URL.createObjectURL(fileToUpload);
+      });
+
+      const initData = await api.initAssetUpload({
+        mimeType: fileToUpload.type,
+        assetType: "input_image",
+        originalFilename: fileToUpload.name,
+      });
+
+      await api.completeAssetUpload({ assetId: initData.assetId, file: fileToUpload });
+      setImageAssetId(initData.assetId);
+    } catch (error) {
+      setImageAssetId(null);
+      setUploadError(error.message || "อัปโหลดรูปภาพไม่สำเร็จ");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  // Re-process the original file whenever a setting that affects the required
+  // image size changes (switching to/from openai, changing model, or aspect
+  // ratio) — otherwise a previously-uploaded image could silently mismatch the
+  // new target size and fail at submit time again.
+  useEffect(() => {
+    if (!imageFile || !config) return;
+    setImageAssetId(null);
+    processAndUpload(imageFile);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageFile, provider, model, aspectRatio, config]);
+
   function handleFileChange(event) {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -101,36 +167,9 @@ export default function NewGenerationForm({ onJobCreated }) {
       return;
     }
 
+    // Setting imageFile triggers the effect above, which resizes (if needed)
+    // and uploads automatically — no separate manual step required.
     setImageFile(file);
-    setImageAssetId(null);
-    setImagePreviewUrl(URL.createObjectURL(file));
-    // Upload immediately on selection instead of requiring a separate manual
-    // click — previously it was possible to select an image, forget the extra
-    // "upload" step, and hit Generate with the job silently created with no
-    // input image attached at all.
-    handleUpload(file);
-  }
-
-  async function handleUpload(fileOverride) {
-    const file = fileOverride || imageFile;
-    if (!file) return;
-    setUploading(true);
-    setUploadError("");
-
-    try {
-      const initData = await api.initAssetUpload({
-        mimeType: file.type,
-        assetType: "input_image",
-        originalFilename: file.name,
-      });
-
-      await api.completeAssetUpload({ assetId: initData.assetId, file });
-      setImageAssetId(initData.assetId);
-    } catch (error) {
-      setUploadError(error.message || "อัปโหลดรูปภาพไม่สำเร็จ");
-    } finally {
-      setUploading(false);
-    }
   }
 
   async function handleGenerate(event) {
@@ -218,10 +257,11 @@ export default function NewGenerationForm({ onJobCreated }) {
         )}
         <input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleFileChange} />
       </div>
-      {uploading ? <p className="subtle">กำลังอัปโหลดรูปภาพ...</p> : null}
+      {uploading ? <p className="subtle">กำลังประมวลผล/อัปโหลดรูปภาพ...</p> : null}
+      {resizeNotice ? <p className="subtle">{resizeNotice}</p> : null}
       {uploadError ? <p className="message error-text">{uploadError}</p> : null}
       {imageFile && !imageAssetId && !uploading ? (
-        <button type="button" onClick={() => handleUpload()} disabled={uploading}>
+        <button type="button" onClick={() => processAndUpload(imageFile)} disabled={uploading}>
           ลองอัปโหลดใหม่
         </button>
       ) : null}
