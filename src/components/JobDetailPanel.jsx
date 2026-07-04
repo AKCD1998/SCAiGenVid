@@ -200,8 +200,12 @@ export default function JobDetailPanel({ jobId, onClose }) {
           {downloadUrl ? (
             <>
               <video controls src={downloadUrl} className="job-detail-video" />
-              <a className="text-link" href={downloadUrl} target="_blank" rel="noreferrer">
-                ดาวน์โหลดวิดีโอ
+              <a
+                className="text-link"
+                href={`${downloadUrl}${downloadUrl.includes("?") ? "&" : "?"}download=1`}
+                download
+              >
+                ดาวน์โหลดวิดีโอลงเครื่อง
               </a>
             </>
           ) : canDownload ? (
